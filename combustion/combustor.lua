@@ -1,17 +1,24 @@
 require("util")
 
-Combustor = {chamber = nil, input_inv = nil, block_inv_direction = "back", dropper = nil, redstone_integrator = nil, redstone_direction = "north", is_blocker = function(item) return (string.match(item.name, ".+nugget.*") and item.nbtHash ~= nil) end}
+Combustor = {chamber = nil, input_inv = nil, block_inv_direction = "back", dropper = nil, redstone_integrator = nil, redstone_direction = "north", is_blocker = function(slot, meta) return false end}
 
 function Combustor:new(o, x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction)
     o = o or {}   -- create object if user does not provide one
     setmetatable(o, self)
     self.__index = self
-    self:set_chamber(x, z, y)
-    self:set_input_inv(input_inv)
-    self:set_block_inv_direction(block_inv_direction)
-    self:set_dropper(dropper)
-    self:set_redstone_integrator(redstone_integrator)
-    self:set_redstone_direction(redstone_direction)
+    o:set_chamber(x, z, y)
+    o:set_input_inv(input_inv)
+    o:set_block_inv_direction(block_inv_direction)
+    o:set_dropper(dropper)
+    o:set_redstone_integrator(redstone_integrator)
+    o:set_redstone_direction(redstone_direction)
+    o.is_blocker =
+        function(slot, meta)
+            if meta then
+                return string.match(meta.displayName, "Combust.*")
+            end
+            return false
+        end
     return o
 end
 
@@ -66,32 +73,31 @@ end
 
 --send a redstone pulse to the combustion chamber
 function Combustor:combust()
-    print("redstone on")
+    --print("redstone on")
     self.redstone_integrator.setOutput(self.redstone_direction, true)
     os.sleep(0.05)
-    print("redstone off")
+    --print("redstone off")
     self.redstone_integrator.setOutput(self.redstone_direction, false)
 end
 
 --suck blocker item from adjacent chest into input
 function Combustor:block_input()
-    print("block input")
-    self.input_inv.pullItem(self.block_inv_direction)
+    --print("block input")
+    self.input_inv.pullItems(self.block_inv_direction, 1)
 end
 
 --move the blocker item to the adjacent chest
 function Combustor:free_input()
-    print("free input")
-    Util.move_items_predicate(self.input_inv, self.block_inv_direction, function(slot, item)
+    --print("free input")
+    return Util.push_items_predicate(self.input_inv, self.block_inv_direction, function(slot, item)
         return self.is_blocker(item)
     end)
-    self.input_inv.pushItem(self.block_inv_direction)
 end
 
 --move all items except the blocker from input_inventory into the dropper
 function Combustor:drop_items()
-    print("drop items")
-    Util.move_items_predicate(self.input_inv, self.dropper, function(slot, item)
+    --print("drop items")
+    return Util.push_items_predicate(self.input_inv, self.dropper, function(slot, item)
         return not self.is_blocker(item)
     end)
 end
@@ -101,20 +107,27 @@ function Combustor:wait_for_input()
     local last = {}
     local current = {}
     while true do
-        print("save last input")
+        --print("save last input")
         last = current
-        print("sleep")
+        --print("sleep")
         sleep(0.05)
-        print("awake")
+        --print("awake")
         coroutine.yield("combustor.wait_for_input")
-        print("get input list from " , peripheral.getName(self.input_inv))
+        --print("get input list from " , peripheral.getName(self.input_inv))
         current = self.input_inv.list()
-        print("comparison")
+        --print("comparison " , last , " and " , current)
         local eq = #last == #current and (#last == 0 or Util.recursive_compare(last, current))
         if eq and #current > 0 then
             return
         end
     end
 end
+
+--item stacks in input chest
+function Combustor:input_count()
+    return #(self.input_inv.list())
+end
+
+
 
 return Combustor
