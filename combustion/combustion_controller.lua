@@ -58,7 +58,7 @@ end
 
 function CombustionController:setup()
     self.entity_sensor = find_entity_sensor()
-    self.output_window = window.create(term.current(),1,1,30,18)
+    self.output_window = window.create(term.current(),1,1,50,19)
 end
 
 local threads = {}
@@ -85,7 +85,7 @@ function CombustionController:run()
     if self.entity_sensor == nil then
         self:setup()
     end
-    
+    os.startTimer(2)
     --sleep(5)
 
     --endless timer coroutine

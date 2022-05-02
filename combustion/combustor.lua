@@ -1,6 +1,6 @@
 require("util")
 
-Combustor = {chamber = nil, input_inv = nil, block_inv_direction = "back", dropper = nil, redstone_integrator = nil, redstone_direction = "north", is_blocker = function(slot, meta) return false end}
+Combustor = {chamber = nil, input_inv = nil, block_inv_direction = "back", dropper = nil, redstone_integrator = nil, redstone_direction = "north", is_blocker = function(meta) return false end}
 
 function Combustor:new(o, x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction)
     o = o or {}   -- create object if user does not provide one
@@ -12,13 +12,7 @@ function Combustor:new(o, x, z, y, input_inv, block_inv_direction, dropper, reds
     o:set_dropper(dropper)
     o:set_redstone_integrator(redstone_integrator)
     o:set_redstone_direction(redstone_direction)
-    o.is_blocker =
-        function(slot, meta)
-            if meta then
-                return string.match(meta.displayName, "Combust.*")
-            end
-            return false
-        end
+    o:set_is_blocker(nil)
     return o
 end
 
@@ -65,7 +59,12 @@ function Combustor:get_set_block_inv_direction()
 end
 
 function Combustor:set_is_blocker(is_blocker)
-    self.is_blocker = is_blocker or function(item) return (string.match(item.name, ".+nugget.*") and item.nbtHash ~= nil) end
+    self.is_blocker = is_blocker or function(meta)
+        if meta then
+            return string.match(meta.displayName, "Combust.*") ~= nil
+        end
+        return false
+    end
 end
 function Combustor:get_is_blocker()
     return self.is_blocker
@@ -89,16 +88,16 @@ end
 --move the blocker item to the adjacent chest
 function Combustor:free_input()
     --print("free input")
-    return Util.push_items_predicate(self.input_inv, self.block_inv_direction, function(slot, item)
-        return self.is_blocker(item)
+    return Util.push_items_predicate(self.input_inv, self.block_inv_direction, function(slot, meta)
+        return self.is_blocker(meta)
     end)
 end
 
 --move all items except the blocker from input_inventory into the dropper
 function Combustor:drop_items()
     --print("drop items")
-    return Util.push_items_predicate(self.input_inv, self.dropper, function(slot, item)
-        return not self.is_blocker(item)
+    return Util.push_items_predicate(self.input_inv, self.dropper, function(slot, meta)
+        return not self.is_blocker(meta)
     end)
 end
 
