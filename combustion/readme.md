@@ -5,7 +5,7 @@
 
 ![5 Combustor Setup Screen Shot](/combustion/images/5_combustors.png?raw=true)
 
-This is for automating the Minecraft mod Skyresources 2.
+This is for automating the Minecraft mod Skyresources 2 - specifically for the modpack Enigmatica 2 Expert: Skyblock.
 
 Since the Skyresources 2 Smart Combustion Controller just combusts a single item at a time, I felt the need to make it faster and ME compatible. 
 Using this code on a CC:Tweaked computer in combination with a Plethora Entity Sensor, you can combust anything with up to 5 stacks of output per combustion very very quickly.
