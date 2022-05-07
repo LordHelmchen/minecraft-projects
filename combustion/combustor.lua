@@ -1,8 +1,8 @@
 require("util")
 
-Combustor = {chamber = nil, input_inv = nil, block_inv_direction = "back", dropper = nil, redstone_integrator = nil, redstone_direction = "north", is_blocker = function(meta) return false end}
+Combustor = {chamber = nil, input_inv = nil, block_inv_direction = "back", dropper = nil, redstone_integrator = nil, redstone_direction = "north", is_blocker = function(meta) return false end, collector = nil, output_inv = nil }
 
-function Combustor:new(o, x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction)
+function Combustor:new(o, x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction, collector, output_inv)
     o = o or {}   -- create object if user does not provide one
     setmetatable(o, self)
     self.__index = self
@@ -13,6 +13,8 @@ function Combustor:new(o, x, z, y, input_inv, block_inv_direction, dropper, reds
     o:set_redstone_integrator(redstone_integrator)
     o:set_redstone_direction(redstone_direction)
     o:set_is_blocker(nil)
+    o:set_collector(collector)
+    o:set_output_inv(output_inv)
     return o
 end
 
@@ -70,6 +72,20 @@ function Combustor:get_is_blocker()
     return self.is_blocker
 end
 
+function Combustor:set_output_inv(output_inv)
+    self.output_inv = output_inv or nil
+end
+function Combustor:get_output_inv()
+    return self.output_inv
+end
+
+function Combustor:set_collector(collector)
+    self.collector = collector or nil
+end
+function Combustor:get_collector()
+    return self.collector
+end
+
 --send a redstone pulse to the combustion chamber
 function Combustor:combust()
     --print("redstone on")
@@ -99,6 +115,24 @@ function Combustor:drop_items()
     return Util.push_items_predicate(self.input_inv, self.dropper, function(slot, meta)
         return not self.is_blocker(meta)
     end)
+end
+
+--move the output items from the collector to the output inventory
+function Combustor:move_output()
+    --print("move input")
+    return Util.push_items_predicate(self.collector, self.output_inv, nil)
+end
+
+--item stacks in the collector
+function Combustor:collector_count()
+    --print("collector count")
+    return #(self.collector.list())
+end
+
+--check the collector for free space
+function Combustor:collector_is_empty()
+    --print("collector is empty")
+    return self:collector_count() == 0
 end
 
 --check the input chest. Compare with last check. If not empty and the same items, then return

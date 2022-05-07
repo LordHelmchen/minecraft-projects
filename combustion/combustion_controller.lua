@@ -49,8 +49,8 @@ local function find_entity_sensor()
     return entity_sensor
 end
 
-function CombustionController:add_combustor(x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction)
-    local c = Combustor:new({}, x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction)
+function CombustionController:add_combustor(x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction, collector, output_inv)
+    local c = Combustor:new({}, x, z, y, input_inv, block_inv_direction, dropper, redstone_integrator, redstone_direction, collector, output_inv)
     table.insert(self.combustor_list, c)
     print("Added combustor at ", x, ",", z, ",", y, " inv:" , peripheral.getName(c:get_input_inv()) , " XX")
     table.insert(self.state_list, "added")
@@ -146,10 +146,16 @@ function CombustionController:run()
                 while not combustor.chamber_is_empty do
                     --print("combust!")
                     self.state_list[index] = "combusting"
+                    --gracefully recover by freeing the collector before combusting
+                    while not combustor:collector_is_empty() do
+                        combustor:move_output()
+                    end
                     combustor:combust()
                     coroutine.yield("worker - combust")
+                    combustor:move_output()
+                    coroutine.yield("worker - move output")
                 end
-                --ENHANCE move item from collector to output??
+                
                 --print("free_input")
                 self.state_list[index] = "removing blocker"
                 combustor:free_input()

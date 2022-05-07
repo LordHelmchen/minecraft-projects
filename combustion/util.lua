@@ -5,7 +5,6 @@ Util = {}
 -- predicate(slot, item) => bool
 function Util.push_items_predicate(from_i, to_i, predicate)
     if from_i == nil or to_i == nil then return end
-    if push == nil then push = true end
     local from_name = nil
     local to_name = nil
     local count = 0
@@ -26,7 +25,7 @@ function Util.push_items_predicate(from_i, to_i, predicate)
         return -1
     end
     for slot, item in pairs(from_i.list()) do
-        if predicate(slot, from_i.getItemMeta(slot)) then
+        if predicate == nil or predicate(slot, from_i.getItemMeta(slot)) then
             if(from_i.pushItems(to_name, slot) > 0) then
                 count = count + 1
             end
