@@ -1,4 +1,4 @@
-require("util")
+require("common.util")
 
 Combustor = {chamber = nil, input_inv = nil, block_inv_direction = "back", dropper = nil, redstone_integrator = nil, redstone_direction = "north", is_blocker = function(meta) return false end, collector = nil, output_inv = nil }
 

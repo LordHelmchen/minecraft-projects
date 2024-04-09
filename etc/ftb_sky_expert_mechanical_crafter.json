@@ -1,0 +1,56 @@
+{
+  {
+    displayName = "Diesel Generator",
+    ingredients = {
+      {
+        name = "create:mechanical_piston",
+        count = 1,
+      },
+      {
+        name = "immersiveengineering:rs_engineering",
+        count = 1,
+      },
+      [ 9 ] = {
+        name = "create:mechanical_piston",
+        count = 1,
+      },
+      [ 13 ] = {
+        name = "create:mechanical_piston",
+        count = 1,
+      },
+      [ 15 ] = {
+        name = "create:mechanical_piston",
+        count = 1,
+      },
+      [ 16 ] = {
+        name = "immersiveengineering:light_engineering",
+        count = 1,
+      },
+      [ 18 ] = {
+        name = "create:fluid_tank",
+        count = 1,
+      },
+      [ 20 ] = {
+        name = "create:brass_sheet",
+        count = 1,
+      },
+      [ 21 ] = {
+        name = "create:fluid_pipe",
+        count = 1,
+      },
+      [ 23 ] = {
+        name = "create:sturdy_sheet",
+        count = 1,
+      },
+      [ 26 ] = {
+        name = "create:brass_sheet",
+        count = 1,
+      },
+      [ 27 ] = {
+        name = "create:sturdy_sheet",
+        count = 1,
+      },
+    },
+    creates = "custommachinery:custom_machine_item",
+  },
+}
