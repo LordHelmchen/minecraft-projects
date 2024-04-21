@@ -1,4 +1,4 @@
-require("combustion_controller")
+require("combustion.combustion_controller")
 
 local cc = CombustionController:new({})
 cc:add_combustor(-4, -1, -2, peripheral.wrap("minecraft:chest_0"), "north", peripheral.wrap("skyresources:quickdroppertile_0"), peripheral.wrap("redstone_integrator_0"), "south", peripheral.wrap("skyresources:combustioncollectortile_0"), peripheral.wrap("minecraft:chest_5"))

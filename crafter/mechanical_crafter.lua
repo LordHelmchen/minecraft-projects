@@ -1,9 +1,9 @@
 require('common.util')
 require('crafter.recipe')
 require('crafter.recipe_collection')
-require 'crafter.multi_crafter'
+require 'crafter.redstone_crafter'
 
-MechanicalCrafter = MultiCrafter:new()
+MechanicalCrafter = RedstoneCrafter:new()
 
 function MechanicalCrafter:setup()
     self.crafters = { peripheral.find("create:mechanical_crafter") }

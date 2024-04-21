@@ -95,10 +95,11 @@ end
 
 --check the inventory. Compare with last check. If not empty and the same items, then return
 -- inv is a wrapped inventory
-function Util.wait_until_inv_is_stable(inv, start)
+function Util.wait_until_inv_is_stable(inv, start, continue_function)
     local last = {}
     local current = {}
-    while true do
+    continue_function = continue_function or function() return true end
+    while continue_function() do
         --print("save last input")
         last = current
         --print("sleep")
@@ -117,4 +118,26 @@ function Util.wait_until_inv_is_stable(inv, start)
             return current
         end
     end
+end
+
+function Util.shallow_copy(t)
+    local t2 = {}
+    for k,v in pairs(t) do
+        t2[k] = v
+    end
+    return t2
+end
+
+function Util.deep_copy(obj, seen)
+    if type(obj) ~= 'table' then return obj end
+    if seen and seen[obj] then return seen[obj] end
+    local s = seen or {}
+    local res = setmetatable({}, getmetatable(obj))
+    s[obj] = res
+    for k, v in pairs(obj) do res[Util.deep_copy(k, s)] = Util.deep_copy(v, s) end
+    return res
+end
+
+function Util.xor(a, b)
+    return (a and not b) or (not a and b)
 end

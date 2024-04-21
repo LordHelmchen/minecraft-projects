@@ -93,8 +93,7 @@ function CrafterMenu:run()
         :setBackground(colors.blue)
     learnButton:onClick(
         function()
-            basalt.debug("learn got clicked! ")
-            if not worker:getStatus() or worker:getStatus() == "dead" then
+            if not worker:getStatus() or worker:getStatus() == "dead" or worker:getStatus() == "suspended" then
                 learnButton:setBackground(colors.green)
                 worker:start(function()
                     local new_recipe = self.crafter:learn()
@@ -107,14 +106,27 @@ function CrafterMenu:run()
         end)
     
     
+    local me_mode = false
     local memodeButton = buttonFrame --> Basalt returns an instance of the object on most methods, to make use of "call-chaining"
-        :addButton() --> This is an example of call chaining
+        :addButton()
         :setText("ME mode")
         :setBackground(colors.blue)
-        :onClick(
-            function()
-                basalt.debug("me mode got clicked!")
-            end)
+    memodeButton:onClick(
+        function()
+            if not me_mode and (not worker:getStatus() or worker:getStatus() == "dead" or worker:getStatus() == "suspended") then
+                me_mode = true
+                memodeButton:setBackground(colors.green)
+                worker:start(function()
+                    self.crafter:me_mode()
+                    basalt.debug("stopped me mode")
+                    memodeButton:setBackground(colors.blue)
+                    me_mode = false
+                end)
+            elseif me_mode then
+                basalt.debug("clicked stop me mode")
+                self.crafter:stop_me_mode()
+            end
+        end)
     
     basalt:onEvent(function(event, key)
         --basalt.debug(event)

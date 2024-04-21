@@ -17,12 +17,12 @@ end
 --crafter setup
 local input_inv = peripheral.wrap("ironchest:diamond_chest_0")
 local output_inv = peripheral.wrap("minecraft:barrel_0")
-local recipes = RecipeCollection:new({}, "etc/ftb_sky_expert_mechanical_crafter.json")
+local recipes = RecipeCollection:new(nil, "etc/ftb_sky_expert_mechanical_crafter.json")
 recipes:load()
-local crafter = MechanicalCrafter:new({}, input_inv, output_inv, recipes, "left", nil,  function() unblockClutch() end, function() blockClutch() end)
+local crafter = MechanicalCrafter:new(nil, input_inv, output_inv, recipes, nil, "left", nil,  function() unblockClutch() end, function() blockClutch() end)
 crafter:setup()
 
-local menu = CrafterMenu:new({}, crafter, recipes)
+local menu = CrafterMenu:new(nil, crafter, recipes)
 menu:run()
 
 --local pretty = require('cc.pretty')

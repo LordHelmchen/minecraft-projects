@@ -1,0 +1,28 @@
+{
+  {
+    displayName = "item.ftbskies.magic_steel",
+    ingredients = {
+      [ 7 ] = {
+        name = "ars_nouveau:air_essence",
+        count = 1,
+      },
+      [ 9 ] = {
+        name = "elementalcraft:drenched_iron_ingot",
+        count = 1,
+      },
+      [ 4 ] = {
+        name = "ars_nouveau:water_essence",
+        count = 1,
+      },
+      [ 5 ] = {
+        name = "ars_nouveau:fire_essence",
+        count = 1,
+      },
+      [ 6 ] = {
+        name = "ars_nouveau:earth_essence",
+        count = 1,
+      },
+    },
+    creates = "ftbskies:magic_steel",
+  },
+}

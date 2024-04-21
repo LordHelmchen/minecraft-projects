@@ -1,4 +1,4 @@
-require("combustor")
+require("combustion.combustor")
 
 CombustionController = {combustor_list = {}, state_list = {}, entity_sensor = nil, output_window = nil}
 
